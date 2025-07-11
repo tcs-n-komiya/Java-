@@ -3,19 +3,21 @@ package test4;
 public class VendingMachine {
 
 	// 売上金額（累積）
-	int totalSales;
+	private int totalSales;
 
 	// 商品の在庫数（例として1種類のみ）
-	int stock;
+	private int stock;
 
 	// 商品の値段
-	int price;
+	private int price;
 
 	// 現在のつり銭額
-	int change;
+	private int change;
 
 	// ユーザーが投入した金額
-	int insertedAmount;
+	private int insertedAmount;
+
+
 
 	// コンストラクタ
 	public VendingMachine( int stock, int price, int change) {
