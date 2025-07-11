@@ -1,0 +1,99 @@
+-- 1. 以下のようなテーブルを作成。
+CREATE TABLE m_user (
+id integer primary key,
+name text not null,
+age integer,
+height integer,
+company integer
+);
+
+CREATE TABLE m_company(
+id integer primary key,
+name text not null
+);
+
+-- 2. 作成したテーブルに以下のような行を挿入。
+INSERT INTO m_user(id,name,age,height,company)
+values(101,'Alpha',20,170,101),
+(102,'Blavo',25,170,102),
+(103,'Charlie',23,163,103),
+(104,'Delta',25,174,102),
+(105,'Echo',21,168,null),
+(106,'Foxtrot',27,169,102);
+
+INSERT INTO m_company(id,name)
+values(101,'jsoc'),
+(102,'usasoc'),
+(103,'nswc'),
+(104,'afsoc');
+-- 3. 全件検索
+SELECT * FROM m_user;
+
+-- 4. nameが'Blavo'の行
+SELECT * FROM m_user WHERE name = 'Blavo';
+
+-- 5. ageが22以上かつ25以下
+SELECT * FROM m_user WHERE age BETWEEN 22 AND 25;
+
+-- 6. 'Blavo'のageを26に更新
+UPDATE m_user SET age = 26 WHERE name = 'Blavo';
+
+-- 7. 全行のageを1増やす
+UPDATE m_user SET age = age + 1;
+
+-- 8. nameが'Blavo'の行を削除
+DELETE FROM m_user WHERE name = 'Blavo';
+
+-- 9. ageが22以上、heightが高い順、上位3件
+SELECT * FROM m_user WHERE age >= 22 ORDER BY height DESC LIMIT 3;
+
+-- 10. heightが2番目に低い行
+SELECT * FROM m_user
+WHERE height = (
+    SELECT DISTINCT height FROM m_user
+    WHERE height IS NOT NULL
+    ORDER BY height ASC
+    OFFSET 1 LIMIT 1
+);
+
+-- 11. ageが22以上→id順、その後22未満→id順
+SELECT * FROM m_user
+ORDER BY (CASE WHEN age >= 22 THEN 0 ELSE 1 END), id;
+
+-- 12. 行数と平均height
+SELECT COUNT(*) AS record_count,
+       AVG(height)select  AS height_average
+FROM m_user;
+
+-- 13. 最大heightと最小heightの差
+SELECT MAX(height) - MIN(height) AS height FROM m_user;
+
+-- 14. ageごとの件数（2件以上）
+SELECT age, COUNT(*) AS count
+FROM m_user
+GROUP BY age
+HAVING COUNT(*) > 1;
+
+-- 15. nameに'e'が含まれる行
+SELECT * FROM m_user WHERE name LIKE '%e%';
+
+-- 16. nameが5文字の行
+SELECT * FROM m_user WHERE LENGTH(name) = 5;
+
+-- 17. companyがNULLでない行
+SELECT * FROM m_user WHERE company IS NOT NULL;
+
+-- 18. m_userにm_companyを結合して会社名も表示
+SELECT u.*, c.name AS company_name
+FROM m_user u
+LEFT JOIN m_company c ON u.company = c.id;
+
+-- 19. 平均heightと等しいheightをもつ行
+SELECT * FROM m_user
+WHERE height = (
+    SELECT ROUND(AVG(height)) FROM m_user
+);
+
+-- 20. テーブルの削除
+DROP TABLE IF EXISTS m_user;
+DROP TABLE IF EXISTS m_company;
